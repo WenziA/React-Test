@@ -2,26 +2,24 @@ import { Layout, Menu, Breadcrumb } from 'antd'
 import { MailOutlined, DesktopOutlined, UserOutlined, TeamOutlined, FileOutlined, HomeOutlined } from '@ant-design/icons'
 import { useState } from 'react'
 import Message from './message'
+import styled from 'styled-components'
 
 const { Sider, Header, Content, Footer } = Layout
 
-const headerStyle = {
-  color: '#fff',
-  height: 64,
-  paddingInline: 48,
-  lineHeight: '64px',
-  fontSize: '24px',
-  fontWeight: 'bold'
-};
-const contentStyle = {
-  color: '#000',
-  padding: '16px',
-};
-const siderStyle = {
-  textAlign: 'center',
-  lineHeight: '120px',
-  color: '#fff'
-};
+const StyledHeader = styled(Header)`
+  color: #fff;
+  height: 64px;
+  padding-inline: 48px;
+  line-height: 64px;
+  font-size: 24px;
+  font-weight: bold;
+  padding-left: 20px;
+`;
+
+const StyledContent = styled(Content)`
+  color: #000;
+  padding: 16px;
+`;
 
 function getItem(label, key, icon, children) {
   return { key, icon, children, label }
@@ -43,12 +41,11 @@ export default function Home() {
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-        <div className="demo-logo-vertical" />
         <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
       </Sider>
       <Layout>
-        <Header theme="dark" style={headerStyle}>AIRHOST</Header>
-        <Content style={contentStyle}>
+        <StyledHeader theme="dark">AIRHOST</StyledHeader>
+        <StyledContent>
           <Breadcrumb style={{ marginBottom: 16 }}>
             <Breadcrumb.Item>
               <HomeOutlined /> Home
@@ -56,7 +53,7 @@ export default function Home() {
             <Breadcrumb.Item>Message</Breadcrumb.Item>
           </Breadcrumb>
           <Message />
-        </Content>
+        </StyledContent>
       </Layout>
     </Layout>
   )
