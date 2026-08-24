@@ -1,6 +1,61 @@
 import { Row, Col, Card, Input, Select, Form, Button, Table, Avatar } from 'antd'
 import { FolderOpenOutlined, InboxOutlined, BlockOutlined, CalendarOutlined, StarOutlined, ReloadOutlined, StarFilled, DeleteOutlined, ExportOutlined } from '@ant-design/icons'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import styled from 'styled-components'
+
+const StyleStar = styled(StarFilled)`
+  color: ${props => props.color};
+`
+
+const StyleUser = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`
+
+const StyleTag = styled.div`
+  font-size: 12px;
+  color: #666;
+`
+
+const StyleDot = styled.span`
+  color: #006eff;
+`
+
+const StyleDiv = styled.div`
+  margin: 0;
+  font-size: 12px;
+  color: #666;
+`
+
+const StyleCenter = styled.div`
+  text-align: center;
+`
+
+const StyleMarginBottomCard = styled(Card)`
+  margin-bottom: 16px;
+`
+
+const StyleArchiveButton = styled(Button)`
+  text-align: left;
+  background: ${props => props.active ? '#e6f7ff' : 'transparent'};
+  color: ${props => props.active ? '#387ccf' : '#000'};
+`
+
+const StyleSpan = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`
+
+const StyleRightButton = styled(Button)`
+  margin-right: 8px;
+`
+
+const StyleSelect = styled(Select)`
+  width: 110px;
+  margin: 0 8px;
+`
 
 const folderItems = [
   { key: 'Inbox', label: 'Inbox', icon: <FolderOpenOutlined /> },
@@ -22,136 +77,89 @@ const starOptions = [
   { value: 'green', label: 'green', color: '#20ff03' },
 ]
 
-const columns = [
-  { title: <StarOutlined />, dataIndex: 'star', key: 'star', width: 50 },
-  {
-    title: 'User',
-    dataIndex: 'user',
-    key: 'user',
-    render: (value, record) => (
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <Avatar src={record.avatar} />
-        <div>
-          <div>{value}</div>
-          <div style={{ fontSize: 12, color: '#666' }}>
-            {record.tag && (
-              <>
-                <span style={{ color: '#006eff'}}>● </span>
-                {record.tag}
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-    ),
-  },
-  { 
-    title: 'Property Name', 
-    dataIndex: 'property', 
-    key: 'property',
-    render:(value,record)=>(
-        <div>
-            <a href=''>{value}</a>
-            <p style={{ margin: 0, fontSize: 12, color: '#666' }}>{record.propertyInfo}</p>
-        </div>
-    ),
-  },
-  { title: 'Checkin', dataIndex: 'checkin', key: 'checkin' },
-  { title: 'Checkout', dataIndex: 'checkout', key: 'checkout' },
-  { 
-    title: 'Description', 
-    dataIndex: 'desc', 
-    key: 'desc',
-    render:(value,record)=>(
-        <div>
-            <a href=''>{value}</a>
-            <p style={{ margin: 0, fontSize: 12, color: '#666' }}>{record.descDetail}</p>
-        </div>
-    ),
-  },
-  { 
-    title: 'Update',
-    dataIndex: 'update', 
-    key: 'update',
-    render:(value)=>(
-      <div style={{textAlign: 'center'}}>
-        <a><ExportOutlined /></a>
-        <p style={{ margin: 0, color: '#666' }}>{value}</p>
-      </div>
-    )
-  },
-]
-
-const tableData = [
-  {
-    id: 1,
-    avatar: "https://mdn.alipayobjects.com/huamei_vmgq1x/afts/img/A*yHnhRL4x1DEAAAAAQBAAAAgAeh6VAQ/original",
-    user: "Suya Xu",
-    tag:"Inbox",
-    property: "GR1",
-    propertyInfo: "#GR1 Light Filled 2 BR Ikebukuro Large Apartment",
-    checkin: "Dec 30 2019",
-    checkout: "Jan 1 2020",
-    desc: "GR1 (12月30日 2019) ~ 1月1日 2020 @airbnb2 ",
-    descDetail: "Can you please restart the device? and try again.",
-    update: "a month ago",
-    star: <StarFilled style={{ color: '#f00'}} />,
-    archived: false, 
-    starred: true
-  },
-  {
-    id: 2,
-    avatar: "https://mdn.alipayobjects.com/huamei_vmgq1x/afts/img/A*Z4-4Q67SG5UAAAAAQLAAAAgAeh6VAQ/original",
-    user: "Stanley",
-    tag:"Inbox",
-    property: "2M11",
-    propertyInfo: "",
-    checkin: "Feb 15 2020",
-    checkout: "Feb 15 2020",
-    desc: "Airbnb2 Inquiry:Stanley",
-    descDetail: "Yes,it on basement without windows but there's ventilation fan.There's an elevator as well as stairs going to the room.",
-    update: "2 month ago",
-    star: <StarFilled style={{ color: '#d4ff00' }} />,
-    archived: false, 
-    starred: false
-  },
-  {
-    id: 3,
-    avatar: "https://mdn.alipayobjects.com/huamei_vmgq1x/afts/img/A*SXcuQYBZ6oQAAAAAQJAAAAgAeh6VAQ/original",
-    user: "Suya Xu",
-    tag:"Inbox",
-    property: "GR1",
-    propertyInfo: "#GR1 Light Filled 2 BR Ikebukuro Large Apartment",
-    checkin: "Dec 30 2019",
-    checkout: "Jan 1 2020",
-    desc: "GR1 (12月30日 2019) ~ 1月1日 2020 @airbnb2 ",
-    descDetail: "Can you please restart the device? and try again.",
-    update: "a month ago",
-    star: <StarFilled style={{ color: '#20ff03'}} />,
-    archived: true, 
-    starred: true
-  },
-  {
-    id: 4,
-    avatar: "https://mdn.alipayobjects.com/huamei_vmgq1x/afts/img/A*yHnhRL4x1DEAAAAAQBAAAAgAeh6VAQ/original",
-    user: "Suya Xu",
-    tag:"",
-    property: "GR1",
-    propertyInfo: "#GR1 Light Filled 2 BR Ikebukuro Large Apartment",
-    checkin: "Dec 30 2019",
-    checkout: "Jan 1 2020",
-    desc: "GR1 (12月30日 2019) ~ 1月1日 2020 @airbnb2 ",
-    descDetail: "Can you please restart the device? and try again.",
-    update: "a month ago",
-    star: <StarFilled style={{ color: '#007bff' }} />,
-    archived: false, 
-    starred: true
-  }
-]
-
 export default function  Message() {
+    const columns = [
+      { title: <StarOutlined />, dataIndex: 'star', key: 'star', width: 50 ,render: (value, record) => (
+        <StyleStar color={record.starColor} />
+      )},
+      {
+        title: 'User',
+        dataIndex: 'user',
+        key: 'user',
+        render: (value, record) => (
+          <StyleUser>
+            <Avatar src={record.avatar} />
+            <div>
+              <div>{value}</div>
+              <StyleTag>
+                {record.tag && (
+                  <>
+                    <StyleDot>● </StyleDot>
+                    {record.tag}
+                  </>
+                )}
+              </StyleTag>
+            </div>
+          </StyleUser>
+        ),
+      },
+      { 
+        title: 'Property Name', 
+        dataIndex: 'property', 
+        key: 'property',
+        render:(value,record)=>(
+            <div>
+                <a href=''>{value}</a>
+                <StyleDiv>{record.propertyInfo}</StyleDiv>
+            </div>
+        ),
+      },
+      { title: 'Checkin', dataIndex: 'checkin', key: 'checkin' },
+      { title: 'Checkout', dataIndex: 'checkout', key: 'checkout' },
+      { 
+        title: 'Description', 
+        dataIndex: 'desc', 
+        key: 'desc',
+        render:(value,record)=>(
+            <div>
+                <a href=''>{value}</a>
+                <StyleDiv>{record.descDetail}</StyleDiv>
+            </div>
+        ),
+      },
+      { 
+        title: 'Update',
+        dataIndex: 'update', 
+        key: 'update',
+        render:(value)=>(
+          <StyleCenter>
+            <a><ExportOutlined /></a>
+            <StyleDiv>{value}</StyleDiv>
+          </StyleCenter>
+        )
+      },
+    ]
+
     const [activeFolder, setActiveFolder] = useState('Inbox')
-    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+    const [selectedRowKeys, setSelectedRowKeys] = useState();
+    const [tableData, setTableData] = useState([]);
+    const [loading, setLoading] = useState(true)
+
+    useEffect(()=>{
+      const tableData = async ()=>{
+        try {
+            const res = await fetch("/api/getMsg")
+            const result = await res.json()
+            setTableData(result)
+        } catch (err) {
+            console.error("请求失败：", err)
+        } finally {
+            setLoading(false)
+        }
+      }
+      tableData();
+    },[])
+
     
     const handleFolderClick = (item) => {
         setActiveFolder(item.key)
@@ -185,29 +193,24 @@ export default function  Message() {
     return (
         <Row gutter={16}>
             <Col span={4}>
-                <Card title="Folder" variant="borderless" style={{ marginBottom: 16 }}>
+                <StyleMarginBottomCard title="Folder" variant="borderless">
                     {folderItems.map(item => (
-                        <Button
+                        <StyleArchiveButton
                             key={item.key}
                             block
                             type= "text"
                             onClick={() => handleFolderClick({ key: item.key })}
-                            style={{
-                                textAlign: 'left',
-                                background: activeFolder === item.key ? '#e6f7ff' : 'transparent',
-                                color: activeFolder === item.key ? '#387ccf' : '#000'
-                            }}
                         >
                             {item.icon}
                             {item.label}
-                        </Button>
+                        </StyleArchiveButton>
                         ))}
-                </Card>
+                </StyleMarginBottomCard>
                 <Card title="Filters" variant="borderless" >
                     <form>
                         <Form.Item name="selectOptions">
                             <Select
-                                style={{ width: '100%' }}
+                                width="100%"
                                 placeholder="Property Name"
                                 options={selectOptions}
                             />
@@ -232,32 +235,27 @@ export default function  Message() {
                     variant="borderless" 
                     extra={
                         <>
-                            <Button style={{ marginRight: 8 }} type="primary"><ReloadOutlined />REFRESH</Button>
+                            <StyleRightButton type="primary"><ReloadOutlined />REFRESH</StyleRightButton>
                             <Button><InboxOutlined />Archive</Button>
-                            <Select
+                            <StyleSelect
                                 placeholder={
-                                    <span style={{ 
-                                        display: 'flex', 
-                                        alignItems: 'center', 
-                                        gap: 12,
-                                    }}>
+                                    <StyleSpan>
                                         <StarOutlined />
                                         <span>Star</span>
-                                    </span>
+                                    </StyleSpan>
                                 }
-                                style={{ width: 110, marginLeft: 8 }}
                                 dropdownMatchSelectWidth={false}
                                 >
                                 {starOptions.map((item) => (
                                     <Select.Option key={item.value} value={item.value}>
-                                    <span style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                                        <StarFilled style={{ color: item.color}} />
-                                        <span>{item.label}</span>
-                                    </span>
+                                        <StyleSpan>
+                                            <StyleStar color={item.color} />
+                                            <span>{item.label}</span>
+                                        </StyleSpan>
                                     </Select.Option>
                                 ))}
-                            </Select>
-                            <Button style={{ marginLeft: 8 }}><DeleteOutlined />Delete</Button>
+                            </StyleSelect>
+                            <Button><DeleteOutlined />Delete</Button>
                         </>
                     }
                 >
