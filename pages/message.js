@@ -1,7 +1,8 @@
-import { Row, Col, Card, Input, Select, Form, Button, Table, Avatar } from 'antd'
-import { FolderOpenOutlined, InboxOutlined, BlockOutlined, CalendarOutlined, StarOutlined, ReloadOutlined, StarFilled, DeleteOutlined, ExportOutlined } from '@ant-design/icons'
+import { Row, Col, Card, Input, Select, Form, Button, Table, Avatar, message, Modal } from 'antd'
+import { FolderOpenOutlined, InboxOutlined, BlockOutlined, CalendarOutlined, StarOutlined, ReloadOutlined, StarFilled, DeleteOutlined, ExportOutlined, LikeOutlined } from '@ant-design/icons'
 import { useState, useEffect } from 'react'
 import styled from 'styled-components'
+import request from './api/request'
 
 const StyleStar = styled(StarFilled)`
   color: ${props => props.color};
@@ -38,8 +39,8 @@ const StyleMarginBottomCard = styled(Card)`
 
 const StyleArchiveButton = styled(Button)`
   text-align: left;
-  background: ${props => props.active ? '#e6f7ff' : 'transparent'};
-  color: ${props => props.active ? '#387ccf' : '#000'};
+  background-color: ${props => props.$active ? '#e6f7ff !important' : 'transparent !important'};
+  color: ${props => props.$active ? '#1890ff !important' : '#000 !important'};
 `
 
 const StyleSpan = styled.span`
@@ -54,7 +55,7 @@ const StyleRightButton = styled(Button)`
 
 const StyleSelect = styled(Select)`
   width: 110px;
-  margin: 0 8px;
+  margin-left: 8px;
 `
 
 const folderItems = [
@@ -140,24 +141,28 @@ export default function  Message() {
       },
     ]
 
-    const [activeFolder, setActiveFolder] = useState('Inbox')
-    const [selectedRowKeys, setSelectedRowKeys] = useState();
+    const [activeFolder, setActiveFolder] = useState(folderItems[0]?.key)
+    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+    const [selectedStarOption, setSelectedStarOption] = useState('')
     const [tableData, setTableData] = useState([]);
     const [loading, setLoading] = useState(true)
 
-    useEffect(()=>{
-      const tableData = async ()=>{
+    const loadData = async ()=>{
+        setLoading(true)
+        setActiveFolder(folderItems[0]?.key)
+        setSelectedRowKeys([])  
         try {
-            const res = await fetch("/api/getMsg")
-            const result = await res.json()
-            setTableData(result)
-        } catch (err) {
-            console.error("请求失败：", err)
+          const res = await request.get('/api/getMsg')
+          setTableData(res)
+        } catch (error) {
+          console.error('拉取消息失败', error)
         } finally {
-            setLoading(false)
+          setLoading(false)
         }
-      }
-      tableData();
+    }
+
+    useEffect(()=>{
+      loadData();
     },[])
 
     
@@ -165,13 +170,13 @@ export default function  Message() {
         setActiveFolder(item.key)
     }
 
-    const onSelectChange = newSelectedRowKeys => {
-        setSelectedRowKeys(newSelectedRowKeys);
-    };
-
     const rowSelection = {
         selectedRowKeys,
-        onChange: onSelectChange,
+        onChange: (newSelectedRowKeys, selectedRows) => {
+        setSelectedRowKeys(newSelectedRowKeys)
+        console.log('选中id集合:', newSelectedRowKeys)
+        console.log('选中完整行数据:', selectedRows)
+      }
     };
 
     const filteredList = tableData.filter(item => {
@@ -189,6 +194,79 @@ export default function  Message() {
             return true
         }
     })
+
+    // ========= 批量标记归档 =========
+    const handleArchive = async () => {
+      if (!selectedRowKeys || selectedRowKeys.length === 0) {
+        message.warning('请先勾选要标记的数据')
+        return
+      }
+
+      // 模拟接口调用
+      // await request.post('/api/xxxxx', { ids: selectedRowKeys })
+
+      // 修改字段 archived:true
+      setTableData(prev => prev.map(item => {
+        if (selectedRowKeys.includes(item.id)) {
+          return { ...item, archived: true }
+        }
+        return item
+      }))
+
+      message.success(`已点赞${selectedRowKeys.length}条为已归档
+        
+        `)
+      setSelectedRowKeys([]) // 清空勾选框
+    }
+
+    // ========= 批量点赞 =========
+    const handleStar = async () => {
+      if (!selectedRowKeys || selectedRowKeys.length === 0) {
+        message.warning('请先勾选要标记的数据')
+        return
+      }
+
+      // 模拟接口调用
+      // await request.post('/api/xxxx', { ids: selectedRowKeys })
+
+      // 修改字段 starred:true 和 starColor
+      setTableData(prev => prev.map(item => {
+        if (selectedRowKeys.includes(item.id)) {
+          return { 
+            ...item, 
+            starred: true, 
+            starColor: selectedStarOption || '#ff6b35' 
+          }
+        }
+        return item
+      }))
+
+      message.success(`已为${selectedRowKeys.length}条消息点赞`)
+      setSelectedRowKeys([]) // 清空勾选框
+    }
+
+    const handleDelete= async () => {
+      if (!selectedRowKeys || selectedRowKeys.length === 0) {
+        message.warning('请先勾选要删除的数据')
+        return
+      }
+
+      Modal.confirm({
+        title: '确认删除',
+        content: `确定要删除选中的 ${selectedRowKeys.length} 条消息吗？删除后无法恢复`,
+        okText: '确认删除',
+        cancelText: '取消',
+        onOk: async () => {
+          // -------- 如果需要调用后端删除接口写在这里 --------
+          // await request.post('/api/xxxxx', { ids: selectedRowKeys })
+
+          const newTableData = tableData.filter(row => !selectedRowKeys.includes(row.id))
+          setTableData(newTableData)
+          setSelectedRowKeys([])
+          message.success('删除成功')
+        }
+      })
+    }
     
     return (
         <Row gutter={16}>
@@ -199,12 +277,13 @@ export default function  Message() {
                             key={item.key}
                             block
                             type= "text"
-                            onClick={() => handleFolderClick({ key: item.key })}
+                            onClick={() => handleFolderClick({ key: item.key})}
+                            $active={activeFolder === item.key}
                         >
                             {item.icon}
                             {item.label}
                         </StyleArchiveButton>
-                        ))}
+                    ))}
                 </StyleMarginBottomCard>
                 <Card title="Filters" variant="borderless" >
                     <form>
@@ -235,8 +314,8 @@ export default function  Message() {
                     variant="borderless" 
                     extra={
                         <>
-                            <StyleRightButton type="primary"><ReloadOutlined />REFRESH</StyleRightButton>
-                            <Button><InboxOutlined />Archive</Button>
+                            <StyleRightButton type="primary" onClick={loadData}><ReloadOutlined />REFRESH</StyleRightButton>
+                            <Button onClick={handleArchive}><InboxOutlined />Archive</Button>
                             <StyleSelect
                                 placeholder={
                                     <StyleSpan>
@@ -245,6 +324,10 @@ export default function  Message() {
                                     </StyleSpan>
                                 }
                                 dropdownMatchSelectWidth={false}
+                                onChange={(value) => {
+                                    const obj = starOptions.find(e => e.value === value)
+                                    setSelectedStarOption(obj.color)
+                                }}
                                 >
                                 {starOptions.map((item) => (
                                     <Select.Option key={item.value} value={item.value}>
@@ -255,7 +338,8 @@ export default function  Message() {
                                     </Select.Option>
                                 ))}
                             </StyleSelect>
-                            <Button><DeleteOutlined />Delete</Button>
+                            <StyleRightButton type='primary' onClick={handleStar}><LikeOutlined /></StyleRightButton>
+                            <Button onClick={handleDelete}><DeleteOutlined />Delete</Button>
                         </>
                     }
                 >

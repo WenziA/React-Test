@@ -1,4 +1,9 @@
 export default function handler(req, res) {
+  // 只允许GET请求
+  if (req.method !== 'GET') {
+    return res.status(405).json({ code: 405, msg: "只允许GET请求" })
+  }
+  
   const data = [
     {
         "id": 1,
