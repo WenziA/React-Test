@@ -55,13 +55,13 @@ const StyleRightButton = styled(Button)`
 
 const StyleSelect = styled(Select)`
   width: 110px;
-  margin-left: 8px;
+  margin: 0 8px;
 `
 
 const folderItems = [
   { key: 'Inbox', label: 'Inbox', icon: <FolderOpenOutlined /> },
   { key: 'Archive', label: 'Archive', icon: <InboxOutlined /> },
-  { key: 'starred', label: 'Starred Tickets', icon: <StarOutlined /> },
+  { key: 'Starred', label: 'Starred Tickets', icon: <StarOutlined /> },
   { key: 'Booking', label: 'Booking confirmed', icon: <CalendarOutlined /> },
   { key: 'All', label: 'All Messages' ,icon: <BlockOutlined />},
 ]
@@ -93,12 +93,12 @@ export default function  Message() {
             <div>
               <div>{value}</div>
               <StyleTag>
-                {record.tag && (
+                {record.tag && record.archived===false ? (
                   <>
                     <StyleDot>● </StyleDot>
                     {record.tag}
                   </>
-                )}
+                ) : null}
               </StyleTag>
             </div>
           </StyleUser>
@@ -173,6 +173,7 @@ export default function  Message() {
     const rowSelection = {
         selectedRowKeys,
         onChange: (newSelectedRowKeys, selectedRows) => {
+
         setSelectedRowKeys(newSelectedRowKeys)
         console.log('选中id集合:', newSelectedRowKeys)
         console.log('选中完整行数据:', selectedRows)
@@ -185,10 +186,10 @@ export default function  Message() {
           case 'Inbox':
             return item.archived === false
             // 存档：已存档为 true
-          case 'archive':
+          case 'Archive':
             return item.archived === true
             // 标星：已标星为 true
-          case 'starred':
+          case 'Starred':
             return item.starred === true
           default:
             return true
@@ -196,7 +197,7 @@ export default function  Message() {
     })
 
     // ========= 批量标记归档 =========
-    const handleArchive = async () => {
+    const handleArchive = () => {
       if (!selectedRowKeys || selectedRowKeys.length === 0) {
         message.warning('请先勾选要标记的数据')
         return
@@ -220,7 +221,7 @@ export default function  Message() {
     }
 
     // ========= 批量点赞 =========
-    const handleStar = async () => {
+    const handleStar =(color)=> {
       if (!selectedRowKeys || selectedRowKeys.length === 0) {
         message.warning('请先勾选要标记的数据')
         return
@@ -235,7 +236,7 @@ export default function  Message() {
           return { 
             ...item, 
             starred: true, 
-            starColor: selectedStarOption || '#ff6b35' 
+            starColor: color || '#ff6b35' 
           }
         }
         return item
@@ -245,7 +246,7 @@ export default function  Message() {
       setSelectedRowKeys([]) // 清空勾选框
     }
 
-    const handleDelete= async () => {
+    const handleDelete= () => {
       if (!selectedRowKeys || selectedRowKeys.length === 0) {
         message.warning('请先勾选要删除的数据')
         return
@@ -327,6 +328,7 @@ export default function  Message() {
                                 onChange={(value) => {
                                     const obj = starOptions.find(e => e.value === value)
                                     setSelectedStarOption(obj.color)
+                                    handleStar(obj.color)
                                 }}
                                 >
                                 {starOptions.map((item) => (
@@ -338,7 +340,6 @@ export default function  Message() {
                                     </Select.Option>
                                 ))}
                             </StyleSelect>
-                            <StyleRightButton type='primary' onClick={handleStar}><LikeOutlined /></StyleRightButton>
                             <Button onClick={handleDelete}><DeleteOutlined />Delete</Button>
                         </>
                     }
