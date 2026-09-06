@@ -50,14 +50,14 @@ export default function handler(req, res) {
         "descDetail": "Can you please restart the device? and try again.",
         "update": "a month ago",
         "starColor": "#20ff03",
-        "archived": true,
+        "archived": false,
         "starred": true
     },
     {
         "id": 4,
         "avatar": "https://mdn.alipayobjects.com/huamei_vmgq1x/afts/img/A*yHnhRL4x1DEAAAAAQBAAAAgAeh6VAQ/original",
         "user": "Suya Xu",
-        "tag": "",
+        "tag": "Inbox",
         "property": "GR1",
         "propertyInfo": "#GR1 Light Filled 2 BR Ikebukuro Large Apartment",
         "checkin": "Dec 30 2019",
@@ -105,7 +105,7 @@ export default function handler(req, res) {
         "id": 7,
         "avatar": "https://mdn.alipayobjects.com/huamei_vmgq1x/afts/img/A*SXcuQYBZ6oQAAAAAQJAAAAgAeh6VAQ/original",
         "user": "Tom Brown",
-        "tag": "",
+        "tag": "Inbox",
         "property": "GR1",
         "propertyInfo": "#GR1 Light Filled 2 BR Ikebukuro Large Apartment",
         "checkin": "May 20 2020",
@@ -114,7 +114,7 @@ export default function handler(req, res) {
         "descDetail": "We had a great stay! Just wanted to ask if you offer long-term discounts?",
         "update": "2 weeks ago",
         "starColor": "#00bcd4",
-        "archived": true,
+        "archived": false,
         "starred": false
     },
     {
@@ -130,7 +130,7 @@ export default function handler(req, res) {
         "descDetail": "Is there parking available nearby? We are renting a car during our stay.",
         "update": "5 days ago",
         "starColor": "#e91e63",
-        "archived": false,
+        "archived": true,
         "starred": true
     },
     {
@@ -153,7 +153,7 @@ export default function handler(req, res) {
         "id": 10,
         "avatar": "https://mdn.alipayobjects.com/huamei_vmgq1x/afts/img/A*SXcuQYBZ6oQAAAAAQJAAAAgAeh6VAQ/original",
         "user": "Emma Wilson",
-        "tag": "",
+        "tag": "Inbox",
         "property": "2M11",
         "propertyInfo": "",
         "checkin": "Feb 22 2020",
@@ -162,7 +162,7 @@ export default function handler(req, res) {
         "descDetail": "The heater seems broken, the room is very cold. Can someone come fix it?",
         "update": "1 month ago",
         "starColor": "#8bc34a",
-        "archived": true,
+        "archived": false,
         "starred": true
     },
     {
@@ -201,7 +201,7 @@ export default function handler(req, res) {
         "id": 13,
         "avatar": "https://mdn.alipayobjects.com/huamei_vmgq1x/afts/img/A*SXcuQYBZ6oQAAAAAQJAAAAgAeh6VAQ/original",
         "user": "Ryan Taylor",
-        "tag": "",
+        "tag": "Inbox",
         "property": "3A5",
         "propertyInfo": "#3A5 Cozy Studio Near Shinjuku Station",
         "checkin": "Feb 28 2020",
@@ -226,7 +226,7 @@ export default function handler(req, res) {
         "descDetail": "Thank you for the stay! The location was perfect. Do you have other properties?",
         "update": "3 weeks ago",
         "starColor": "#795548",
-        "archived": true,
+        "archived": false,
         "starred": true
     },
     {
@@ -242,14 +242,14 @@ export default function handler(req, res) {
         "descDetail": "Is there a washing machine in the unit? We are staying for 4 nights.",
         "update": "1 week ago",
         "starColor": "#607d8b",
-        "archived": false,
+        "archived": true,
         "starred": false
     },
     {
         "id": 16,
         "avatar": "https://mdn.alipayobjects.com/huamei_vmgq1x/afts/img/A*SXcuQYBZ6oQAAAAAQJAAAAgAeh6VAQ/original",
         "user": "Rachel Green",
-        "tag": "",
+        "tag": "Inbox",
         "property": "4B2",
         "propertyInfo": "#4B2 Modern 1BR in Shibuya Center",
         "checkin": "Jun 22 2020",
@@ -274,7 +274,7 @@ export default function handler(req, res) {
         "descDetail": "We love the tatami room! Is it okay to eat on the floor mats?",
         "update": "5 days ago",
         "starColor": "#4caf50",
-        "archived": false,
+        "archived": true,
         "starred": false
     },
     {
@@ -297,7 +297,7 @@ export default function handler(req, res) {
         "id": 19,
         "avatar": "https://mdn.alipayobjects.com/huamei_vmgq1x/afts/img/A*SXcuQYBZ6oQAAAAAQJAAAAgAeh6VAQ/original",
         "user": "Daniel Wu",
-        "tag": "",
+        "tag": "Inbox",
         "property": "6D3",
         "propertyInfo": "#6D3 Compact Apartment Ueno Area",
         "checkin": "Sep 12 2020",
@@ -306,7 +306,7 @@ export default function handler(req, res) {
         "descDetail": "We lost the key card. Is there a spare one or do we need to pay for replacement?",
         "update": "4 days ago",
         "starColor": "#2196f3",
-        "archived": true,
+        "archived": false,
         "starred": false
     },
     {
@@ -345,7 +345,7 @@ export default function handler(req, res) {
         "id": 22,
         "avatar": "https://mdn.alipayobjects.com/huamei_vmgq1x/afts/img/A*SXcuQYBZ6oQAAAAAQJAAAAgAeh6VAQ/original",
         "user": "Scarlett Johansson",
-        "tag": "",
+        "tag": "Inbox",
         "property": "7E9",
         "propertyInfo": "#7E9 Luxury Penthouse Roppongi Hills",
         "checkin": "Dec 15 2020",
@@ -354,7 +354,7 @@ export default function handler(req, res) {
         "descDetail": "The view is amazing! Can we have an extra blanket? It gets cold at night.",
         "update": "1 week ago",
         "starColor": "#00bcd4",
-        "archived": true,
+        "archived": false,
         "starred": true
     },
     {
